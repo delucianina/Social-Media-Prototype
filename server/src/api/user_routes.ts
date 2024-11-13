@@ -4,6 +4,9 @@ import { isAuthenticated } from '../helpers/index.js';
 
 const router = Router();
 
+
+
+
 // Get user shops
 // localhost:3333/api/shops/user
 router.get('/shops/user', isAuthenticated, async(req: Request, res: Response) => {
@@ -15,6 +18,9 @@ router.get('/shops/user', isAuthenticated, async(req: Request, res: Response) =>
 
   res.json(userShops);
 });
+
+
+
 
 // Create a shop
 router.post('/shop', isAuthenticated, async (req: Request, res: Response) => {
@@ -35,6 +41,10 @@ router.post('/shop', isAuthenticated, async (req: Request, res: Response) => {
   }
 });
 
+
+
+
+
 // Add a wine to a shop
 router.post('/wine', isAuthenticated, async (req: Request, res: Response) => {
   // Find the shop using the logged in users's id and the ShopId provided through req.body from the client/browser
@@ -44,7 +54,6 @@ router.post('/wine', isAuthenticated, async (req: Request, res: Response) => {
       id: req.body.ShopId
     }
   });
-
 
   // If we didn't find the shop then they are not the owner
   if (!userShop) {
@@ -71,6 +80,10 @@ router.post('/wine', isAuthenticated, async (req: Request, res: Response) => {
     });
   }
 });
+
+
+
+
 
 // Delete a shop
 router.delete('/shop', isAuthenticated, async (req: Request, res: Response) => {
@@ -108,5 +121,9 @@ router.delete('/shop', isAuthenticated, async (req: Request, res: Response) => {
     });
   }
 });
+
+
+
+
 
 export default router;

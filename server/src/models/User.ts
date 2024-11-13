@@ -1,19 +1,20 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
+// import bcrypt from 'bcrypt';
+// const { hash, compare } = bcrypt;
 const { Schema, model } = mongoose;
-const { hash, compare } = bcrypt;
 
 
 
 const userSchema = new Schema({
     username: {
         type: String,
-        minLength: [2, 'Your username must be at least 2 characters in length']
+        unique: true,
+        required: true,
+        trim: true
     },
     email: {
         type: String,
-        // The unique rule only works when the collection is first created
-        // YOu cannot create a custom error message with the array witht the syntax on the unique rule
+        required: true,
         unique: true,
         // Ensure the value is a valid email string
         match: [/.+@.+\..+/, 'Please enter a valid email address']
@@ -24,7 +25,7 @@ const userSchema = new Schema({
     }],
     friends: [{
         type: Schema.Types.ObjectId,
-        ref: 'Friend'
+        ref: 'user'
     }]
 }, {
     toJSON: {
@@ -39,15 +40,35 @@ const userSchema = new Schema({
 
 
 
-userSchema.pre('save', async function (next) {
-    const user: any = this;
-    if (user.isNew) {
-        user.password = await hash(user.password, 10)
-    }
-    next();
+userSchema.virtual('friendCount').get(function() {
+    return this.friends.length;
 });
-userSchema.methods.validatePassword = async function (formPassword: string) {
-    return await compare(formPassword, this.password)
-}
+
+
+// -------------------------------------------------------------
+// SOME CODE FOR EVENTUALLY IMPLEMENTING A LOGIN PASSWORD SYSTEM  
+// -------------------------------------------------------------
+
+// userSchema.pre('save', async function (next) {
+//     const user: any = this;
+//     if (user.isNew) {
+//         user.password = await hash(user.password, 10)
+//     }
+//     next();
+// });
+
+
+// userSchema.methods.validatePassword = async function (formPassword: string) {
+//     return await compare(formPassword, this.password)
+// }
+
+// -------------------------------------------------------------
+// -------------------------------------------------------------
+
+
+
 const User = model('User', userSchema);
+
+
+
 export default User;
