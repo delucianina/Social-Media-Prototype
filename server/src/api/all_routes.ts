@@ -1,49 +1,53 @@
 import {Router, Request, Response} from 'express';
-import { Shop, Wine } from '../../models/index.js';
-import { isAuthenticated } from '../helpers/index.js';
+import { User } from '../models/User.js';
 
 const router = Router();
 
 
 
 
-// Get user shops
-// localhost:3333/api/shops/user
-router.get('/shops/user', isAuthenticated, async(req: Request, res: Response) => {
-  const userShops = await Shop.findAll({
-    where: {
-      user_id: req.user.id  
-    }
-  });
+// GET LIST OF USERS 
+// localhost:3333/api/users
+router.get('/users', async(_: Request, res: Response) => {
+  const userList = await User.findAll();
 
-  res.json(userShops);
+  res.json(userList);
 });
 
 
 
+// CREATE A GET ROUTE THAT RETRIEVES JUST ONE USER
+// WRITE THE ROUTE HERE 
 
-// Create a shop
-router.post('/shop', isAuthenticated, async (req: Request, res: Response) => {
+
+// -------------
+// LEFT OFF HERE 
+// -------------
+
+// Create a new User 
+router.post('/newUser', async (req: Request, res: Response) => {
   try {
-    await Shop.create({
+    await User.create({
       ...req.body,
       user_id: req.user.id
     });
 
     res.json({
-      message: 'Shop created successfully!'
+      message: 'User created successfully!'
     })
   } catch (error) {
-    console.log('create shop error', error);
+    console.log('create user error', error);
     res.status(500).json({
-      message: 'There was a problem creating the shop'
+      message: 'There was a problem creating the user'
     });
   }
 });
 
 
-
-
+/*
+// -------------
+// USE THIS AS REFERENCE TO CREATE A POST? 
+// -------------
 
 // Add a wine to a shop
 router.post('/wine', isAuthenticated, async (req: Request, res: Response) => {
@@ -81,12 +85,18 @@ router.post('/wine', isAuthenticated, async (req: Request, res: Response) => {
   }
 });
 
+*/
 
 
 
+/* 
+
+// -------------
+// USE THIS AS REFERENCE TO DELETE A USER 
+// -------------
 
 // Delete a shop
-router.delete('/shop', isAuthenticated, async (req: Request, res: Response) => {
+router.delete('/shop', async (req: Request, res: Response) => {
   // Find the shop using the logged in users's id and the ShopId provided through req.body from the client/browser
   const userShop = await Shop.findOne({
     where: {
@@ -122,7 +132,7 @@ router.delete('/shop', isAuthenticated, async (req: Request, res: Response) => {
   }
 });
 
-
+*/
 
 
 

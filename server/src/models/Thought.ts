@@ -45,7 +45,7 @@ const thoughtSchema = new Schema({
       maxLength: [280, 'Your comment must be 280 characters or less']
     },
     username: {
-      type: String, 
+      type: String,
       required: true
     },
     createdAt: {
