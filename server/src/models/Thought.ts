@@ -1,71 +1,61 @@
 import mongoose from 'mongoose';
+const { Schema, model, Types } = mongoose;
 
-const { Schema, model } = mongoose;
+function formatTimestamp(timestamp: any) { 
+    const date = new Date(timestamp); 
+    const year = date.getFullYear(); 
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed 
+    const day = String(date.getDate()).padStart(2, '0'); 
+    const hours = String(date.getHours()).padStart(2, '0'); 
+    const minutes = String(date.getMinutes()).padStart(2, '0'); 
+    const seconds = String(date.getSeconds()).padStart(2, '0'); 
 
-
-
-//  CODE FOR ADDING A 'LIKE' SYSTEM 
-// const reactionSchema = new Schema({
-//   user: {
-//       type: Schema.Types.ObjectId,
-//       ref: 'User'
-//   }
-// });
-
-
-
-const thoughtSchema = new Schema({
-  thoughtText: {
-    type: String,
-    required: true,
-    minLength: [1, 'Your thought must be at least 1 character in length'],
-    maxLength: [280, 'Your thought must be less than 280 characters in length']
-  },
-  createdAt: {
-    type: Date,
-    // ------- ASK ABOUT THIS: 
-    default: Date.now,
-    get: (createdAt: Date) => createdAt.toLocaleString()
-  },
-  username: {
-    type: Schema.Types.ObjectId,
-    required: [true, 'You must attach the user _id to the post'],
-    ref: 'User'
-  },
-  // ----------------------
-  // ----  IS THIS CORRECT? 
-  // ----------------------
-  reaction: [{
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`; // "2024-11-15 12:34:56"
+}
+const reactionSchema = new Schema({
     reactionId: {
-      user: Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
+        default: () => new Types.ObjectId()
     },
     reactionBody: {
-      type: String,
-      required: true,
-      maxLength: [280, 'Your comment must be 280 characters or less']
+        type: String,
+        required: true,
+        maxLength: [280, 'Your reaction text should be 280 characters or less']
     },
     username: {
-      type: String,
-      required: true
+        type: String,
+        required: true
     },
     createdAt: {
-      type: Date,
-      default: Date.now,
-      get: (createdAt: Date) => createdAt.toLocaleString()
+        type: Date,
+        default: Date.now,
+        get: (date: any) => formatTimestamp(date)
     }
-  }]
 });
 
+const thoughtSchema = new Schema({
+    thoughtText: {
+        type: String,
+        required: true,
+        minLength: [1, 'Your thought must be at least 1 character in length'],
+        maxLength: [280, 'Your thought cannot exceed 280 characters in length']
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        get: (date: any) => formatTimestamp(date)
+    },
+    username: {
+        type: String,
+        required: true
+    },
+    reactions: [reactionSchema]
+});
 
-// ----- ASK ABOUT THIS TOO
-// thoughtSchema.virtual('reactionCount').get(function() {
-//   return this.likes.length;
-// });
-
-
-
+thoughtSchema.virtual('reactionCount').get(function () {
+    return this.reactions.length;
+})
 // pass in model method: give name we want to call it, then the schema 
 const Thought = model('Thought', thoughtSchema);
-
 // export it 
 export default Thought;

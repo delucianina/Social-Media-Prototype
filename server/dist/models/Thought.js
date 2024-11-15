@@ -1,26 +1,55 @@
 import mongoose from 'mongoose';
-const { Schema, model } = mongoose;
-const likeSchema = new Schema({
-    user: {
+const { Schema, model, Types } = mongoose;
+function formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed 
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`; // "2024-11-15 12:34:56"
+}
+const reactionSchema = new Schema({
+    reactionId: {
         type: Schema.Types.ObjectId,
-        ref: 'User'
+        default: () => new Types.ObjectId()
+    },
+    reactionBody: {
+        type: String,
+        required: true,
+        maxLength: [280, 'Your reaction text should be 280 characters or less']
+    },
+    username: {
+        type: String,
+        required: true
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        get: (date) => formatTimestamp(date)
     }
 });
 const thoughtSchema = new Schema({
-    title: {
+    thoughtText: {
         type: String,
-        minLength: [3, 'Your title must be at least 3 characters in length']
+        required: true,
+        minLength: [1, 'Your thought must be at least 1 character in length'],
+        maxLength: [280, 'Your thought cannot exceed 280 characters in length']
     },
-    body: {
+    createdAt: {
+        type: Date,
+        default: Date.now,
+        get: (date) => formatTimestamp(date)
+    },
+    username: {
         type: String,
-        minLength: [3, 'Your post body must be at least 3 characters in length']
+        required: true
     },
-    user: {
-        type: Schema.Types.ObjectId,
-        required: [true, 'You must attach the user _id to the post'],
-        ref: 'User'
-    },
-    likes: [likeSchema]
+    reactions: [reactionSchema]
+});
+thoughtSchema.virtual('reactionCount').get(function () {
+    return this.reactions.length;
 });
 // pass in model method: give name we want to call it, then the schema 
 const Thought = model('Thought', thoughtSchema);

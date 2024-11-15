@@ -1,58 +1,46 @@
-import {Router, Request, Response} from 'express';
+import { Router } from 'express';
 import { User } from '../models/index.js';
-
 const router = Router();
-
-
-
-
 // GET LIST OF USERS 
 // localhost:3333/api/users
-router.get('/users', async(_: Request, res: Response) => {
-  try {
-    const userList = await User.find({});
-    res.json(userList);
-  } catch (err) {
-    console.error('Error finding all users', err);
-    res.status(500).json({
-      message: 'There was a problem finding all users'
-    })
-  }
+router.get('/users', async (_, res) => {
+    try {
+        const userList = await User.find({});
+        res.json(userList);
+    }
+    catch (err) {
+        console.error('Error finding all users', err);
+        res.status(500).json({
+            message: 'There was a problem finding all users'
+        });
+    }
 });
-
-
-
 // CREATE A GET ROUTE THAT RETRIEVES JUST ONE USER
 // WRITE THE ROUTE HERE 
-
-
 // -------------
 // LEFT OFF HERE 
 // -------------
-
 // Create a new User 
-router.post('/newUser', async (req: Request, res: Response) => {
-  try {
-    const userData = await User.create({
-      ...req.body,
-    });
-
-    res.json({
-      message: 'User created successfully!',
-      user: userData
-    })
-  } catch (error) {
-    console.log('create user error', error);
-    res.status(500).json({
-      message: 'There was a problem creating the user'
-    });
-  }
+router.post('/newUser', async (req, res) => {
+    try {
+        const userData = await User.create({
+            ...req.body,
+        });
+        res.json({
+            message: 'User created successfully!',
+            user: userData
+        });
+    }
+    catch (error) {
+        console.log('create user error', error);
+        res.status(500).json({
+            message: 'There was a problem creating the user'
+        });
+    }
 });
-
-
 /*
 // -------------
-// USE THIS AS REFERENCE TO CREATE A POST? 
+// USE THIS AS REFERENCE TO CREATE A POST?
 // -------------
 
 // Add a wine to a shop
@@ -92,13 +80,10 @@ router.post('/wine', isAuthenticated, async (req: Request, res: Response) => {
 });
 
 */
-
-
-
-/* 
+/*
 
 // -------------
-// USE THIS AS REFERENCE TO DELETE A USER 
+// USE THIS AS REFERENCE TO DELETE A USER
 // -------------
 
 // Delete a shop
@@ -139,7 +124,4 @@ router.delete('/shop', async (req: Request, res: Response) => {
 });
 
 */
-
-
-
 export default router;

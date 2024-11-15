@@ -1,29 +1,20 @@
 const gql = String.raw;
 const typeDefs = gql `
-  
-  type Like {
-        user: User
-    }
 
   type Thought {
     _id: ID
-    title: String
-    body: String
-    user: User
-  }
-
-  type Friend {
-    _id: ID
-    firstname: String
-    lastname: String
+    thoughtText: String
+    createdAt: Date
+    username: User
+    reaction: [reaction]
   }
 
   type User {
     _id: ID
     username: String
     email: String
-    friends: [Friend]
     thoughts: [Thought]
+    friends: [User]
   }
 
   type Response {
@@ -40,9 +31,10 @@ const typeDefs = gql `
     test: String
   }
 
-  type Mutation {
-    registerUser(username: String!, email: String!, password: String!): RegisterUserResponse
-    loginUser(email: String, password: String): String
-  }
+  # ----- REPURPOSE TO CREATE USER? 
+  # type Mutation {
+  #   registerUser(username: String!, email: String!, password: String!): RegisterUserResponse
+  #   loginUser(email: String, password: String): String
+  # }
 `;
 export default typeDefs;
