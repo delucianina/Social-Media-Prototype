@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 const { Schema, model, Types } = mongoose;
+// FUNCTION TO GET CURRENT DATE
 function formatTimestamp(timestamp) {
     const date = new Date(timestamp);
     const year = date.getFullYear();
@@ -10,6 +11,7 @@ function formatTimestamp(timestamp) {
     const seconds = String(date.getSeconds()).padStart(2, '0');
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`; // "2024-11-15 12:34:56"
 }
+// REACTION SCHEMA
 const reactionSchema = new Schema({
     reactionId: {
         type: Schema.Types.ObjectId,
@@ -20,6 +22,11 @@ const reactionSchema = new Schema({
         required: true,
         maxLength: [280, 'Your reaction text should be 280 characters or less']
     },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     username: {
         type: String,
         required: true
@@ -29,7 +36,13 @@ const reactionSchema = new Schema({
         default: Date.now,
         get: (date) => formatTimestamp(date)
     }
+}, {
+    toJSON: {
+        getters: true
+    },
+    id: false,
 });
+// THOUGHT SCHEMA
 const thoughtSchema = new Schema({
     thoughtText: {
         type: String,
@@ -42,12 +55,26 @@ const thoughtSchema = new Schema({
         default: Date.now,
         get: (date) => formatTimestamp(date)
     },
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
     username: {
         type: String,
         required: true
     },
     reactions: [reactionSchema]
+}, {
+    toJSON: {
+        virtuals: true,
+        getters: true
+    },
+    toObject: {
+        virtuals: true
+    }
 });
+// VIRTUAL TO GET REACTION COUNT
 thoughtSchema.virtual('reactionCount').get(function () {
     return this.reactions.length;
 });

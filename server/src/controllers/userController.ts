@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
-import User from '../models/User';
-import Thought from '../models/Thought';
-import { errorHandler } from '../schema/helpers/index';
+import User from '../models/User.js';
+import Thought from '../models/Thought.js';
 
 
 // GET ALL USERS
@@ -10,7 +9,7 @@ export const getUsers = async (_: Request, res: Response) => {
     const users = await User.find({});
     res.json(users);
   } catch (error) {
-    res.status(500).send(errorHandler(error));
+    res.status(500).send((error));
   }
 };
 
@@ -36,7 +35,7 @@ export const createUser = async (req: Request, res: Response) => {
       user: user,
     })
   } catch (error: any) {
-    res.status(400).send(errorHandler(error));
+    res.status(400).send((error));
     const errors: String[] = [];
 
     if (error.code === 11000) {
@@ -90,7 +89,6 @@ export const addFriend = async (req: Request, res: Response) => {
 
 // DELETE FRIEND BY ID
 export const deleteFriend = async (req: Request, res: Response) => {
-  const user_id = req.params.user_id;
   const friend_id = req.body.friend_id;
 
   await User.findByIdAndUpdate(req.params.userId, {
@@ -111,7 +109,7 @@ export const getAllThoughts = async (_: Request, res: Response) => {
     });
     res.json(thoughts);
   } catch (error) {
-    res.status(500).send(errorHandler(error));
+    res.status(500).send((error));
   }
 }
 
@@ -179,7 +177,7 @@ export const addReaction = async (req: Request, res: Response) => {
       thought: updatedThought
     });
   } catch (error) {
-    res.status(500).send(errorHandler);
+    res.status(500).send(error);
   }
 }
 
@@ -198,6 +196,6 @@ export const deleteReaction = async (req: Request, res: Response) => {
       message: "Reaction deleted"
     })
   } catch (error) {
-    res.status(500).send(errorHandler);
+    res.status(500).send(error);
   }
 }

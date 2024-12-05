@@ -1,36 +1,27 @@
 {
-  "name": "mongodb_overview",
+  "name": "social_media_mongodb",
   "version": "1.0.0",
+  "description": "![License](https://img.shields.io/badge/License-MIT-blue.svg)",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "client:install": "cd ./client && npm i",
-    "client:dev": "cd ./client && npm run dev",
-    "server:install": "cd ./server && npm i",
-    "server:dev": "cd ./server && npm run dev",
-    "dev": "concurrently \"npm run server:dev\" \"wait-on tcp:3333 && npm run client:dev\"",
+    "dev": "nodemon",
     "seed": "cd ./server && npm run seed",
-    "start": "node ./server/dist/server.js",
-    "install:all": "npm i && cd ./server && npm i && cd ../client && npm i"
+    "build": "tsc",
+    "start": "node ./dist/server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@apollo/server": "^4.11.2",
-    "@types/react": "^18.3.12",
     "bcrypt": "^5.1.1",
-    "concurrently": "^9.1.0",
     "express": "^4.21.1",
-    "mongoose": "^8.8.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "mongoose": "^8.8.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.0",
-    "@types/react-dom": "^18.3.1",
+    "@types/node": "^22.9.0",
     "nodemon": "^3.1.7"
-  },
-  "description": ""
+  }
 }

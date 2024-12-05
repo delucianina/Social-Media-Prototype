@@ -1,4 +1,15 @@
+// IMPORTS 
 import { Schema, model } from 'mongoose';
+// OR ---- INSTEAD, IN CLASS WE DID: 
+// const {Schema, model} = mongoose;
+// INTERFACE FROM TUTOR SESSION?
+// interface IUser extends Document {
+//     username: string,
+//     email: string,
+//     thoughts: Schema.Types.ObjectId[],
+//     friends: Schema.Types.ObjectId[]
+// }
+// USER SCHEMA 
 const userSchema = new Schema({
     username: {
         type: String,
@@ -30,10 +41,15 @@ const userSchema = new Schema({
             delete user.__v;
             return user;
         }
+    },
+    toObject: {
+        virtuals: true
     }
 });
+// VIRTUALS
 userSchema.virtual('friendCount').get(function () {
     return this.friends.length; // Get the amount of friends that the user has
 });
+// CREATE AND EXPORT THE USER MODEL
 const User = model('User', userSchema);
 export default User;
